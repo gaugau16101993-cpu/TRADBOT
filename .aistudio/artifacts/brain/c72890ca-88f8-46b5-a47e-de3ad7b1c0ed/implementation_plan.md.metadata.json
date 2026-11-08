@@ -1,0 +1,6 @@
+{
+  "summary":  "Master Implementation Plan for Bitget 5-Bot Engine V2 Audit & Optimization. Enforces verified Bitget USDT-M crypto futures only, rebuilds Bot 4 Execution Engine with zero-price protection and strict 2.0 USDT margin, establishes Bot 5 Self-Learning research pipeline with Out-of-Sample Challenger validation (PF >= 1.20), enforces Independent Risk Governor (5 USDT daily loss limit, 0.03% spread limit, max 10 positions, 1 per symbol, alert on consecutive losses), and automates 100% forensic audit reporting and test suites.",
+  "updatedAt":  "2026-11-08T08:38:11.548155351Z",
+  "requestFeedback":  true,
+  "userFacing":  true
+}

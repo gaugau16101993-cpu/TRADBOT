@@ -1,0 +1,30 @@
+[
+  {
+    "rollbackId": "RB-MANUAL-1793717215099",
+    "timestamp": 1793717215099,
+    "fromVersion": "v3.0-CHALLENGER",
+    "toVersion": "v1.0.0",
+    "triggerReason": "Kiểm tra tính năng Rollback 1-chạm",
+    "backupFile": "data/engine_state.backup.json",
+    "metricsBeforeRollback": {
+      "walletBalance": 100,
+      "openPositionsCount": 0,
+      "winRatePct": 100,
+      "profitFactor": 2
+    }
+  },
+  {
+    "rollbackId": "RB-1793717181256",
+    "timestamp": 1793717181256,
+    "fromVersion": "v3.0-CHALLENGER",
+    "toVersion": "v1.0.0",
+    "triggerReason": "Thăng cấp Challenger v3.0-CHALLENGER thay thế v1.0.0",
+    "backupFile": "data/engine_state.backup.json",
+    "metricsBeforeRollback": {
+      "walletBalance": 100,
+      "openPositionsCount": 0,
+      "winRatePct": 100,
+      "profitFactor": 2.1
+    }
+  }
+]

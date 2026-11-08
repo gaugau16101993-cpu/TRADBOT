@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="vi" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bitget 5-Bot Multi-Layer Scalping Paper Trading Engine</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            dark: '#080a0f',
+                            card: '#11141d',
+                            border: '#1f2430',
+                            accent: '#22c55e',
+                            purple: '#a855f7',
+                            cyan: '#06b6d4',
+                            warning: '#f59e0b',
+                            danger: '#ef4444'
+                        }
+                    },
+                    fontFamily: {
+                        mono: ['Share Tech Mono', 'monospace'],
+                        sans: ['Inter', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: #080a0f; color: #9ca3af; font-family: 'Inter', sans-serif; }
+        .font-digital { font-family: 'Share Tech Mono', monospace; }
+        .glow-green { text-shadow: 0 0 10px rgba(34, 197, 94, 0.5); }
+        .glow-purple { box-shadow: 0 0 15px rgba(168, 85, 247, 0.2); }
+        ::-webkit-scrollbar { width: 4px; height: 4px; }
+        ::-webkit-scrollbar-track { background: #080a0f; }
+        ::-webkit-scrollbar-thumb { background: #1f2430; border-radius: 2px; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col p-2 sm:p-4 select-none">
+
+    <!-- TOP HEADER -->
+    <header class="w-full max-w-7xl mx-auto flex flex-wrap items-center justify-between border-b border-brand-border pb-3 mb-4 text-xs font-digital">
+        <div class="flex items-center space-x-3 mb-2 sm:mb-0">
+            <span class="flex items-center text-white font-bold tracking-wider">
+                <i data-lucide="cpu" class="w-4 h-4 text-brand-accent mr-1.5"></i> BITGET 5-BOT ENGINE
+            </span>
+            <span class="bg-purple-950/80 text-purple-400 border border-purple-800/50 px-2 py-0.5 rounded text-[10px]">
+                PAPER MODE (10.00 USDT)
+            </span>
+            <span class="hidden md:inline text-gray-600">|</span>
+            <span class="hidden md:inline text-gray-400">WS + REST REALTIME DATA</span>
+        </div>
+
+        <div class="flex items-center space-x-4">
+            <div id="ws-status" class="flex items-center space-x-1.5 text-emerald-400">
+                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span>WS CONNECTED</span>
+            </div>
+            <span class="text-gray-500">|</span>
+            <span class="text-gray-400" id="latency-val">p50: 12ms</span>
+            <span class="text-gray-500">|</span>
+            <span class="text-gray-300" id="utc-clock">00:00:00 UTC</span>
+        </div>
+    </header>
+
+    <!-- MAIN ENGINE WRAPPER -->
+    <main class="w-full max-w-7xl mx-auto space-y-4">
+
+        <!-- SYSTEM METRICS OVERVIEW & CONTROL PANEL -->
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-4">
+            <!-- WALLET CARD -->
+            <div class="bg-brand-card border border-brand-border rounded-xl p-4 flex flex-col justify-between">
+                <div class="flex justify-between items-center mb-2">
+                    <span class="text-xs font-mono uppercase text-gray-400">Paper Balance</span>
+                    <i data-lucide="wallet" class="w-4 h-4 text-emerald-400"></i>
+                </div>
+                <div>
+                    <div id="wallet-balance" class="text-3xl font-bold font-digital text-white glow-green">$10.0000</div>
+                    <div class="flex justify-between text-[11px] font-mono text-gray-400 mt-2">
+                        <span>Equity: <strong id="wallet-equity" class="text-gray-200">$10.0000</strong></span>
+                        <span>PnL: <strong id="wallet-pnl" class="text-emerald-400">+$0.0000</strong></span>
+                    </div>
+                </div>
+                <div class="mt-3 pt-2 border-t border-brand-border/60 flex justify-between text-[10px] font-mono text-gray-500">
+                    <span>Margin/Trade: $2.00</span>
+                    <span>Max Leverage: 20x</span>
+                </div>
+            </div>
+
+            <!-- ENGINE STATUS CARD -->
+            <div class="bg-brand-card border border-brand-border rounded-xl p-4 flex flex-col justify-between">
+                <div class="flex justify-between items-center mb-2">
+                    <span class="text-xs font-mono uppercase text-gray-400">Scheduler Engine</span>
+                    <span id="engine-badge" class="px-2 py-0.5 rounded text-[10px] font-mono bg-emerald-950 text-emerald-400 border border-emerald-800">RUNNING</span>
+                </div>
+                <div class="flex items-center space-x-4 my-1">
+                    <div class="relative flex items-center justify-center w-12 h-12 rounded-full border-2 border-brand-accent/40 bg-gray-900 font-digital text-emerald-400 font-bold text-lg">
+                        <span id="cycle-countdown">60</span>
+                    </div>
+                    <div>
+                        <div class="text-xs font-bold text-white">60s Multi-Bot Cycle</div>
+                        <div class="text-[11px] font-mono text-gray-400" id="scanned-coins-count">Scanned: 8 Coins</div>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-2 mt-2">
+                    <button id="toggle-engine-btn" onclick="toggleEngine()" class="w-full bg-emerald-600 hover:bg-emerald-500 active:scale-95 transition text-white py-1.5 rounded text-xs font-semibold flex items-center justify-center space-x-1">
+                        <i data-lucide="pause" class="w-3.5 h-3.5"></i>
+                        <span id="engine-btn-text">Tạm dừng System</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- BOTS PIPELINE STATUS -->
+            <div class="lg:col-span-2 bg-brand-card border border-brand-border rounded-xl p-4 flex flex-col justify-between">
+                <div class="flex justify-between items-center mb-2 border-b border-brand-border/60 pb-2">
+                    <span class="text-xs font-mono uppercase text-gray-400">5-Bot Scalping Pipeline</span>
+                    <span class="text-[11px] font-mono text-cyan-400">Real-time Bitget Feed</span>
+                </div>
+                <div class="grid grid-cols-5 gap-1.5 text-center font-mono text-[11px]">
+                    <div class="bg-gray-900/80 p-2 rounded border border-gray-800">
+                        <div class="text-gray-400 font-bold mb-1">BOT 1</div>
+                        <div id="bot1-status" class="text-emerald-400 text-[10px]">Scanner Idle</div>
+                    </div>
+                    <div class="bg-gray-900/80 p-2 rounded border border-gray-800">
+                        <div class="text-gray-400 font-bold mb-1">BOT 2</div>
+                        <div id="bot2-status" class="text-cyan-400 text-[10px]">MTF Analyst</div>
+                    </div>
+                    <div class="bg-gray-900/80 p-2 rounded border border-gray-800">
+                        <div class="text-gray-400 font-bold mb-1">BOT 3</div>
+                        <div id="bot3-status" class="text-purple-400 text-[10px]">Signal Engine</div>
+                    </div>
+                    <div class="bg-gray-900/80 p-2 rounded border border-gray-800">
+                        <div class="text-gray-400 font-bold mb-1">BOT 4</div>
+                        <div id="bot4-status" class="text-amber-400 text-[10px]">Net PnL Zero</div>
+                    </div>
+                    <div class="bg-gray-900/80 p-2 rounded border border-gray-800">
+                        <div class="text-gray-400 font-bold mb-1">BOT 5</div>
+                        <div id="bot5-status" class="text-rose-400 text-[10px]">Audit Learn</div>
+                    </div>
+                </div>
+                <div class="mt-2 text-[10px] font-mono text-gray-500 flex justify-between">
+                    <span>Active Bot 4 Rule: <strong class="text-amber-400">Auto-Close on Net PnL > 0</strong></span>
+                    <span>Strategy Ver: <strong id="strat-ver" class="text-gray-300">v2.4-Scalp</strong></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- POSITIONS & LIVE LOGS GRID -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+            
+            <!-- OPEN POSITIONS TABLE (2 COLS) -->
+            <div class="lg:col-span-2 bg-brand-card border border-brand-border rounded-xl p-4 flex flex-col h-72">
+                <div class="flex items-center justify-between pb-3 border-b border-brand-border/60 text-xs font-mono">
+                    <span class="flex items-center gap-1.5 font-bold text-white">
+                        <i data-lucide="layers" class="w-4 h-4 text-amber-400"></i>
+                        Active Paper Positions (Max 2)
+                    </span>
+                    <span class="text-gray-500" id="active-positions-count">0 / 2 Open</span>
+                </div>
+                <div class="flex-1 overflow-y-auto my-2">
+                    <table class="w-full text-left font-mono text-xs">
+                        <thead class="text-[10px] text-gray-500 border-b border-brand-border/40 uppercase">
+                            <tr>
+                                <th class="pb-2">Coin</th>
+                                <th class="pb-2">Side</th>
+                                <th class="pb-2">Entry</th>
+                                <th class="pb-2">Current</th>
+                                <th class="pb-2">Margin</th>
+                                <th class="pb-2">Net PnL</th>
+                                <th class="pb-2 text-right">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="positions-tbody" class="divide-y divide-gray-800/40 text-[11px]">
+                            <tr>
+                                <td colspan="7" class="py-8 text-center text-gray-600">Không có vị thế mở. Đang chờ tín hiệu từ Bot 3 & Execution Bot 4.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- LIVE SYSTEM CONSOLE LOGS (1 COL) -->
+            <div class="bg-brand-card border border-brand-border rounded-xl p-4 flex flex-col h-72">
+                <div class="flex items-center justify-between pb-2 border-b border-brand-border/60 text-xs font-mono">
+                    <span class="flex items-center gap-1.5 font-bold text-white">
+                        <i data-lucide="terminal" class="w-4 h-4 text-cyan-400"></i>
+                        System Console
+                    </span>
+                    <button onclick="clearLogs()" class="text-[10px] text-gray-500 hover:text-gray-300">Clear</button>
+                </div>
+                <div id="console-logs" class="flex-1 overflow-y-auto space-y-1 my-2 font-mono text-[10px] text-gray-400">
+                    <div>[SYS] Application initialized. Waiting for WebSocket connection...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- HISTORY & TRADE AUDIT -->
+        <div class="bg-brand-card border border-brand-border rounded-xl p-4">
+            <div class="flex items-center justify-between pb-3 border-b border-brand-border/60 text-xs font-mono">
+                <span class="flex items-center gap-1.5 font-bold text-white">
+                    <i data-lucide="history" class="w-4 h-4 text-purple-400"></i>
+                    Paper Trading History & Net PnL Audit
+                </span>
+                <span class="text-gray-500 text-[11px]" id="history-total-pnl">Total Closed PnL: $0.0000</span>
+            </div>
+            <div class="overflow-x-auto my-2">
+                <table class="w-full text-left font-mono text-xs">
+                    <thead class="text-[10px] text-gray-500 border-b border-brand-border/40 uppercase">
+                        <tr>
+                            <th class="py-2">Time</th>
+                            <th>Symbol</th>
+                            <th>Side</th>
+                            <th>Entry</th>
+                            <th>Exit</th>
+                            <th>Gross PnL</th>
+                            <th>Fees & Costs</th>
+                            <th>Net PnL</th>
+                            <th>Close Reason</th>
+                        </tr>
+                    </thead>
+                    <tbody id="history-tbody" class="divide-y divide-gray-800/40 text-[11px]">
+                        <tr>
+                            <td colspan="9" class="py-6 text-center text-gray-600">Chưa có lịch sử giao dịch.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        lucide.createIcons();
+
+        // UTILS & CLOCK
+        function updateClock() {
+            const now = new Date();
+            document.getElementById('utc-clock').innerText = now.toUTCString().split(' ')[4] + ' UTC';
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        // APP STATE
+        let isEngineRunning = true;
+        let cycleSeconds = 60;
+        let walletBalance = 10.0000;
+        let positions = [];
+        let tradeHistory = [];
+        let trackedCoins = ['BTCUSDT', 'ETHUSDT', 'SOLUSDT', 'XRPUSDT', 'DOGEUSDT', 'AVAXUSDT', 'NEARUSDT', 'LINKUSDT'];
+        
+        const MAKER_FEE = 0.0002;
+        const TAKER_FEE = 0.0006;
+        const SLIPPAGE_PCT = 0.0005;
+
+        function addLog(msg, type = 'info') {
+            const consoleEl = document.getElementById('console-logs');
+            const time = new Date().toLocaleTimeString();
+            const div = document.createElement('div');
+            let color = 'text-gray-400';
+            if (type === 'success') color = 'text-emerald-400';
+            if (type === 'warning') color = 'text-amber-400';
+            if (type === 'danger') color = 'text-rose-400';
+            if (type === 'cyan') color = 'text-cyan-400';
+
+            div.className = `${color}`;
+            div.innerText = `[${time}] ${msg}`;
+            consoleEl.insertBefore(div, consoleEl.firstChild);
+            if (consoleEl.children.length > 50) consoleEl.removeChild(consoleEl.lastChild);
+        }
+
+        function clearLogs() {
+            document.getElementById('console-logs').innerHTML = '';
+        }
+
+        function toggleEngine() {
+            isEngineRunning = !isEngineRunning;
+            const badge = document.getElementById('engine-badge');
+            const btnText = document.getElementById('engine-btn-text');
+            if (isEngineRunning) {
+                badge.innerText = 'RUNNING';
+                badge.className = 'px-2 py-0.5 rounded text-[10px] font-mono bg-emerald-950 text-emerald-400 border border-emerald-800';
+                btnText.innerText = 'Tạm dừng System';
+                addLog('[SYS] Engine resumed.', 'success');
+            } else {
+                badge.innerText = 'PAUSED';
+                badge.className = 'px-2 py-0.5 rounded text-[10px] font-mono bg-amber-950 text-amber-400 border border-amber-800';
+                btnText.innerText = 'Kích hoạt System';
+                addLog('[SYS] Engine paused by user.', 'warning');
+            }
+        }
+
+        // COUNTDOWN SCHEDULER LOOP
+        setInterval(() => {
+            if (!isEngineRunning) return;
+            cycleSeconds--;
+            document.getElementById('cycle-countdown').innerText = cycleSeconds;
+
+            if (cycleSeconds <= 0) {
+                cycleSeconds = 60;
+                runPipelineCycle();
+            }
+        }, 1000);
+
+        // PIPELINE CYCLE
+        async function runPipelineCycle() {
+            addLog('[BOT 1] Scanning Bitget USDT-M Futures markets...', 'cyan');
+            document.getElementById('bot1-status').innerText = 'Scanning...';
+
+            try {
+                // Fetch Bitget Tickers
+                const res = await fetch('https://api.bitget.com/api/v2/mix/market/tickers?productType=USDT-FUTURES');
+                const data = await res.json();
+                
+                if (data.code === '00000' && data.data) {
+                    const validTickers = data.data.filter(t => trackedCoins.includes(t.symbol));
+                    document.getElementById('bot1-status').innerText = `Active (${validTickers.length})`;
+                    addLog(`[BOT 1] Found ${validTickers.length} active target contracts.`, 'success');
+
+                    // Pass to Bot 2 Analysis & Bot 3 Signals
+                    document.getElementById('bot2-status').innerText = 'Analyzing MTF';
+                    document.getElementById('bot3-status').innerText = 'Evaluating';
+
+                    // Evaluate random simulated signal for demo paper trading
+                    if (positions.length < 2 && Math.random() > 0.3) {
+                        const target = validTickers[Math.floor(Math.random() * validTickers.length)];
+                        const side = Math.random() > 0.5 ? 'LONG' : 'SHORT';
+                        const price = parseFloat(target.lastPr);
+
+                        triggerPaperTrade(target.symbol, side, price);
+                    }
+                }
+            } catch (err) {
+                addLog(`[BOT 1] API Error: ${err.message}`, 'danger');
+                document.getElementById('bot1-status').innerText = 'API Error';
+            }
+        }
+
+        // BOT 4 EXECUTION & RISK MANAGEMENT
+        function triggerPaperTrade(symbol, side, currentPrice) {
+            if (positions.some(p => p.symbol === symbol)) return; // Anti-duplicate
+
+            const margin = 2.00;
+            const leverage = 10;
+            const notional = margin * leverage;
+            const amount = notional / currentPrice;
+            const openFee = notional * TAKER_FEE;
+
+            if (walletBalance < margin) {
+                addLog(`[BOT 4] Insufficient paper balance for margin ($${margin})`, 'warning');
+                return;
+            }
+
+            walletBalance -= margin;
+
+            const pos = {
+                id: 'POS-' + Date.now().toString().slice(-6),
+                botId: 4,
+                symbol,
+                side,
+                entryPrice: currentPrice,
+                amount,
+                margin,
+                leverage,
+                openFee,
+                openTime: new Date().toISOString(),
+                status: 'OPEN'
+            };
+
+            positions.push(pos);
+            addLog(`[BOT 4] Opened ${side} ${symbol} @ ${currentPrice.toFixed(2)} | Margin: $2.00 | Leverage: 10x`, 'success');
+            renderPositions();
+            renderWallet();
+        }
+
+        // REAL-TIME POSITIONS EVALUATION (NET PNL > 0 AUTO-CLOSE)
+        setInterval(async () => {
+            if (positions.length === 0) return;
+
+            try {
+                const res = await fetch('https://api.bitget.com/api/v2/mix/market/tickers?productType=USDT-FUTURES');
+                const data = await res.json();
+                
+                if (data.code === '00000' && data.data) {
+                    data.data.forEach(t => {
+                        const currentPrice = parseFloat(t.lastPr);
+                        checkAndClosePositions(t.symbol, currentPrice);
+                    });
+                }
+            } catch (e) {}
+        }, 1500);
+
+        function checkAndClosePositions(symbol, currentPrice) {
+            positions.forEach((pos, idx) => {
+                if (pos.symbol !== symbol || pos.status !== 'OPEN') return;
+
+                const isLong = pos.side === 'LONG';
+                const notional = pos.amount * currentPrice;
+                const grossPnL = isLong ? (currentPrice - pos.entryPrice) * pos.amount : (pos.entryPrice - currentPrice) * pos.amount;
+
+                const closeFee = notional * TAKER_FEE;
+                const slippageCost = notional * SLIPPAGE_PCT;
+                const totalCosts = pos.openFee + closeFee + slippageCost;
+                const netPnL = grossPnL - totalCosts;
+
+                pos.currentPrice = currentPrice;
+                pos.currentNetPnL = netPnL;
+
+                // BOT 4 RULE: AUTO CLOSE IMMEDIATELY WHEN NET PNL > 0
+                if (netPnL > 0) {
+                    closePosition(pos, currentPrice, 'NET_PNL_POSITIVE_TRIGGER', finalNetPnL => {
+                        addLog(`[BOT 4] AUTO-CLOSED ${pos.symbol} | Net PnL > 0 Triggered: +$${finalNetPnL.toFixed(4)}`, 'success');
+                    });
+                }
+            });
+
+            renderPositions();
+        }
+
+        function closePosition(pos, exitPrice, reason, callback) {
+            if (pos.status !== 'OPEN') return;
+            pos.status = 'CLOSING';
+
+            const isLong = pos.side === 'LONG';
+            const closeTime = new Date().toISOString();
+            const notional = pos.amount * exitPrice;
+            const closeFee = notional * TAKER_FEE;
+            const grossPnL = isLong ? (exitPrice - pos.entryPrice) * pos.amount : (pos.entryPrice - exitPrice) * pos.amount;
+            const totalCosts = pos.openFee + closeFee;
+            const finalNetPnL = grossPnL - totalCosts;
+
+            walletBalance += (pos.margin + finalNetPnL);
+
+            tradeHistory.unshift({
+                time: closeTime,
+                symbol: pos.symbol,
+                side: pos.side,
+                entry: pos.entryPrice,
+                exit: exitPrice,
+                grossPnL,
+                costs: totalCosts,
+                netPnL: finalNetPnL,
+                reason
+            });
+
+            positions = positions.filter(p => p.id !== pos.id);
+
+            renderPositions();
+            renderHistory();
+            renderWallet();
+
+            if (callback) callback(finalNetPnL);
+        }
+
+        // RENDER FUNCTIONS
+        function renderWallet() {
+            document.getElementById('wallet-balance').innerText = '$' + walletBalance.toFixed(4);
+            const openPnL = positions.reduce((acc, p) => acc + (p.currentNetPnL || 0), 0);
+            const equity = walletBalance + openPnL;
+            document.getElementById('wallet-equity').innerText = '$' + equity.toFixed(4);
+            document.getElementById('wallet-pnl').innerText = (openPnL >= 0 ? '+' : '') + '$' + openPnL.toFixed(4);
+        }
+
+        function renderPositions() {
+            const tbody = document.getElementById('positions-tbody');
+            document.getElementById('active-positions-count').innerText = `${positions.length} / 2 Open`;
+
+            if (positions.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" class="py-8 text-center text-gray-600">Không có vị thế mở. Đang chờ tín hiệu từ Bot 3 & Execution Bot 4.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = positions.map(p => {
+                const isLong = p.side === 'LONG';
+                const sideClass = isLong ? 'text-emerald-400 bg-emerald-950/60 px-1.5 py-0.5 rounded' : 'text-rose-400 bg-rose-950/60 px-1.5 py-0.5 rounded';
+                const pnl = p.currentNetPnL || 0;
+                const pnlClass = pnl >= 0 ? 'text-emerald-400' : 'text-rose-400';
+
+                return `
+                    <tr>
+                        <td class="py-2.5 font-bold text-white">${p.symbol}</td>
+                        <td><span class="${sideClass}">${p.side} ${p.leverage}x</span></td>
+                        <td>$${p.entryPrice.toFixed(2)}</td>
+                        <td>$${(p.currentPrice || p.entryPrice).toFixed(2)}</td>
+                        <td>$${p.margin.toFixed(2)}</td>
+                        <td class="${pnlClass} font-bold">$${pnl.toFixed(4)}</td>
+                        <td class="text-right">
+                            <button onclick="closePositionManually('${p.id}')" class="px-2 py-0.5 bg-rose-950 hover:bg-rose-900 border border-rose-800 text-rose-300 text-[10px] rounded">Đóng</button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function closePositionManually(id) {
+            const pos = positions.find(p => p.id === id);
+            if (pos) {
+                closePosition(pos, pos.currentPrice || pos.entryPrice, 'MANUAL_CLOSE');
+            }
+        }
+
+        function renderHistory() {
+            const tbody = document.getElementById('history-tbody');
+            if (tradeHistory.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="9" class="py-6 text-center text-gray-600">Chưa có lịch sử giao dịch.</td></tr>`;
+                return;
+            }
+
+            const totalNetPnL = tradeHistory.reduce((acc, h) => acc + h.netPnL, 0);
+            document.getElementById('history-total-pnl').innerText = `Total Closed PnL: ${totalNetPnL >= 0 ? '+' : ''}$${totalNetPnL.toFixed(4)}`;
+
+            tbody.innerHTML = tradeHistory.map(h => {
+                const isLong = h.side === 'LONG';
+                const sideClass = isLong ? 'text-emerald-400' : 'text-rose-400';
+                const pnlClass = h.netPnL >= 0 ? 'text-emerald-400 font-bold' : 'text-rose-400 font-bold';
+
+                return `
+                    <tr class="hover:bg-gray-900/40">
+                        <td class="py-2 text-gray-500">${new Date(h.time).toLocaleTimeString()}</td>
+                        <td class="font-bold text-white">${h.symbol}</td>
+                        <td class="${sideClass}">${h.side}</td>
+                        <td>$${h.entry.toFixed(2)}</td>
+                        <td>$${h.exit.toFixed(2)}</td>
+                        <td>$${h.grossPnL.toFixed(4)}</td>
+                        <td class="text-amber-400">-$${h.costs.toFixed(4)}</td>
+                        <td class="${pnlClass}">${h.netPnL >= 0 ? '+' : ''}$${h.netPnL.toFixed(4)}</td>
+                        <td class="text-gray-400 text-[10px]">${h.reason}</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // INITIAL STARTUP
+        window.onload = () => {
+            runPipelineCycle();
+        };
+    </script>
+</body>
+</html>
+```
+
+The system interface dashboard has been restored with the complete 5-Bot Multi-Layer Paper Trading Engine layout.

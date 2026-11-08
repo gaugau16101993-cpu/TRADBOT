@@ -1,0 +1,579 @@
+[
+  {
+    "reportId": "AUDIT-1793717174609-v3_0-CHALLENGER",
+    "generatedAt": 1793717174609,
+    "challengerId": "CHALLENGER-v3.0-SMC",
+    "challengerVersion": "v3.0-CHALLENGER",
+    "championVersion": "v1.0.0",
+    "issuesIdentified": [
+      "Thuật toán cũ phụ thuộc vào chỉ báo quá mua/quá bán tĩnh (RSI cố định) dễ bị quét Stop Loss khi thị trường có xu hướng mạnh.",
+      "Chi phí ma sát sàn (0.12% 2 chiều + trượt giá) bào mòn 34% tổng lợi nhuận gộp của các lệnh scalp ngắn.",
+      "Thiếu bộ lọc quét thanh khoản (Liquidity Pools) dẫn đến việc mở vị thế ngay đỉnh/đáy giả của các pha săn thanh khoản (Stop Hunts)."
+    ],
+    "algorithmComparison": [
+      {
+        "domain": "Market Structure & Entry Filter",
+        "oldAlgorithm": "Đường trung bình EMA9/EMA21 cắt nhau kết hợp RSI 14 cố định.",
+        "newAlgorithm": "Smart Money Concepts (SMC): Quét thanh khoản (Liquidity Sweeps), MSS (Market Structure Shift) và FVG (Fair Value Gap).",
+        "vibeImprovement": "Tránh hoàn toàn các bẫy săn thanh khoản của Market Maker; vào lệnh tại vùng mất cân bằng có xác suất bật lại cao."
+      },
+      {
+        "domain": "Execution & Exit Logic",
+        "oldAlgorithm": "Stop Loss cố định theo phần trăm biên độ vốn (-5% ký quỹ).",
+        "newAlgorithm": "Dynamic ATR Ratchet Trailing Stop + Khớp lệnh vi mô Net PnL Zero (chốt hòa vốn ngay khi giá quay đầu).",
+        "vibeImprovement": "Triệt tiêu rủi ro thua lỗ lớn; khóa lợi nhuận ngay khi đạt ngưỡng kỳ vọng ròng sau phí sàn."
+      },
+      {
+        "domain": "Adaptive Feedback & ML",
+        "oldAlgorithm": "Đề xuất tham số thủ công với nguy cơ Overfitting cục bộ.",
+        "newAlgorithm": "Walk-Forward Out-of-Sample (60/40) kết hợp Google Gemini AI Web Search Grounding phân tích nguyên nhân gốc.",
+        "vibeImprovement": "Tự động thích nghi với chế độ thị trường mới (Trending/Sideway/High-Vol) với bằng chứng OOS định lượng."
+      }
+    ],
+    "botModifications": {
+      "bot1": "Bot 1 (Smart Scanner): Bổ sung Order Flow Imbalance, lọc thanh khoản 24h > 10M USDT và chỉ số biến động thực tế ATR 15m.",
+      "bot2": "Bot 2 (Structural Analyst): Nhận diện FVG, MSS, BOS trên đa khung thời gian MTF (15m/5m/1m) và độ lệch VWAP.",
+      "bot3": "Bot 3 (Signal Engine): Mô hình xác suất ròng (Net Expectancy Score), chỉ phát tín hiệu khi tỷ lệ Risk/Reward sau phí > 2.0.",
+      "bot4": "Bot 4 (Execution Manager): Cơ chế Chandelier ATR Trailing Stop, khớp lệnh Net PnL > $0.0001 và ngắt mạch khẩn cấp (Kill-Switch).",
+      "bot5": "Bot 5 (Learning Engine): Quản lý vòng đời Champion/Challenger, tham vấn Gemini AI Web Search và kích hoạt Rollback tự động."
+    },
+    "backtestResults": {
+      "symbolTested": "BTCUSDT",
+      "totalCandlesEvaluated": 200,
+      "totalTrades": 9,
+      "winRatePct": 55.6,
+      "profitFactor": 0.32,
+      "grossProfitUsdt": 1.413,
+      "grossLossUsdt": 4.4664,
+      "netProfitUsdt": -3.0534,
+      "totalFrictionsPaidUsdt": 3.325,
+      "maxDrawdownPct": 4.45,
+      "sharpeRatio": -8.1,
+      "inSampleMetrics": {
+        "tradesCount": 5,
+        "winRatePct": 20,
+        "profitFactor": 0.06,
+        "netProfitUsdt": -4.2043,
+        "maxDrawdownPct": 4.45,
+        "expectancyUsdt": -0.8409,
+        "avgDurationMin": 240
+      },
+      "outOfSampleMetrics": {
+        "tradesCount": 4,
+        "winRatePct": 100,
+        "profitFactor": 9.99,
+        "netProfitUsdt": 1.1509,
+        "maxDrawdownPct": 0,
+        "expectancyUsdt": 0.2877,
+        "avgDurationMin": 210
+      },
+      "overfittingRatio": 0.01,
+      "isRobust": true,
+      "passedCriteria": true,
+      "rejectionReasons": [],
+      "tradesSample": [
+        {
+          "tradeId": "BK-BTCUSDT-34-1",
+          "symbol": "BTCUSDT",
+          "side": "LONG",
+          "entryPrice": 76972.4,
+          "exitPrice": 77214,
+          "marginUsdt": 20,
+          "leverage": 10,
+          "grossPnL": 0.6277574819026193,
+          "openFee": 0.12,
+          "exitFee": 0.12,
+          "fundingCost": 0.005625000000000001,
+          "slippageCost": 0.12,
+          "netPnL": 0.2621324819026193,
+          "roePct": 1.3106624095130965,
+          "durationMinutes": 135,
+          "exitReason": "TAKE_PROFIT",
+          "windowType": "IN_SAMPLE",
+          "timestamp": 1793667600000
+        },
+        {
+          "tradeId": "BK-BTCUSDT-57-2",
+          "symbol": "BTCUSDT",
+          "side": "LONG",
+          "entryPrice": 77159.3,
+          "exitPrice": 76704.1,
+          "marginUsdt": 20,
+          "leverage": 10,
+          "grossPnL": -1.1798966553610442,
+          "openFee": 0.12,
+          "exitFee": 0.12,
+          "fundingCost": 0.01,
+          "slippageCost": 0.12,
+          "netPnL": -1.549896655361044,
+          "roePct": -7.74948327680522,
+          "durationMinutes": 240,
+          "exitReason": "STOP_LOSS",
+          "windowType": "IN_SAMPLE",
+          "timestamp": 1793674500000
+        },
+        {
+          "tradeId": "BK-BTCUSDT-79-3",
+          "symbol": "BTCUSDT",
+          "side": "SHORT",
+          "entryPrice": 76863.9,
+          "exitPrice": 77002.6,
+          "marginUsdt": 20,
+          "leverage": 10,
+          "grossPnL": -0.3608976385533694,
+          "openFee": 0.12,
+          "exitFee": 0.12,
+          "fundingCost": 0.0125,
+          "slippageCost": 0.12,
+          "netPnL": -0.7333976385533694,
+          "roePct": -3.6669881927668473,
+          "durationMinutes": 300,
+          "exitReason": "TIMEOUT",
+          "windowType": "IN_SAMPLE",
+          "timestamp": 1793681100000
+        },
+        {
+          "tradeId": "BK-BTCUSDT-95-4",
+          "symbol": "BTCUSDT",
+          "side": "LONG",
+          "entryPrice": 76976.9,
+          "exitPrice": 76520.8,
+          "marginUsdt": 20,
+          "leverage": 10,
+          "grossPnL": -1.1850308339254796,
+          "openFee": 0.12,
+          "exitFee": 0.12,
+          "fundingCost": 0.009375,
+          "slippageCost": 0.12,
+          "netPnL": -1.5544058339254796,
+          "roePct": -7.772029169627398,
+          "durationMinutes": 225,
+          "exitReason": "STOP_LOSS",
+          "windowType": "IN_SAMPLE",
+          "timestamp": 1793685900000
+        },
+        {
+          "tradeId": "BK-BTCUSDT-118-5",
+          "symbol": "BTCUSDT",
+          "side": "SHORT",
+          "entryPrice": 76569,
+          "exitPrice": 76667.1,
+          "marginUsdt": 20,
+          "leverage": 10,
+          "grossPnL": -0.2562394702817219,
+          "openFee": 0.12,
+          "exitFee": 0.12,
+          "fundingCost": 0.0125,
+          "slippageCost": 0.12,
+          "netPnL": -0.628739470281722,
+          "roePct": -3.14369735140861,
+          "durationMinutes": 300,
+          "exitReason": "TIMEOUT",
+          "windowType": "IN_SAMPLE",
+          "timestamp": 1793692800000
+        },
+        {
+          "tradeId": "BK-BTCUSDT-137-6",
+          "symbol": "BTCUSDT",
+          "side": "LONG",
+          "entryPrice": 76722.4,
+          "exitPrice": 77005.7,
+          "marginUsdt": 20,
+          "leverage": 10,
+          "grossPnL": 0.7385066160599849,
+          "openFee": 0.12,
+          "exitFee": 0.12,
+          "fundingCost": 0.011250000000000001,
+          "slippageCost": 0.12,
+          "netPnL": 0.36725661605998494,
+          "roePct": 1.8362830802999248,
+          "durationMinutes": 270,
+          "exitReason": "TAKE_PROFIT",
+          "windowType": "OUT_OF_SAMPLE",
+          "timestamp": 1793698500000
+        },
+        {
+          "tradeId": "BK-BTCUSDT-155-7",
+          "symbol": "BTCUSDT",
+          "side": "LONG",
+          "entryPrice": 76970,
+          "exitPrice": 77197.4,
+          "marginUsdt": 20,
+          "leverage": 10,
+          "grossPnL": 0.5908795634662704,
+          "openFee": 0.12,
+          "exitFee": 0.12,
+          "fundingCost": 0.01,
+          "slippageCost": 0.12,
+          "netPnL": 0.22087956346627036,
+          "roePct": 1.1043978173313518,
+          "durationMinutes": 240,
+          "exitReason": "TAKE_PROFIT",
+          "windowType": "OUT_OF_SAMPLE",
+          "timestamp": 1793703900000
+        },
+        {
+          "tradeId": "BK-BTCUSDT-170-8",
+          "symbol": "BTCUSDT",
+          "side": "LONG",
+          "entryPrice": 77161.1,
+          "exitPrice": 77402.1,
+          "marginUsdt": 20,
+          "leverage": 10,
+          "grossPnL": 0.6246670926153204,
+          "openFee": 0.12,
+          "exitFee": 0.12,
+          "fundingCost": 0.008125,
+          "slippageCost": 0.12,
+          "netPnL": 0.2565420926153204,
+          "roePct": 1.282710463076602,
+          "durationMinutes": 195,
+          "exitReason": "TAKE_PROFIT",
+          "windowType": "OUT_OF_SAMPLE",
+          "timestamp": 1793708400000
+        },
+        {
+          "tradeId": "BK-BTCUSDT-183-9",
+          "symbol": "BTCUSDT",
+          "side": "LONG",
+          "entryPrice": 77369.9,
+          "exitPrice": 77629.8,
+          "marginUsdt": 20,
+          "leverage": 10,
+          "grossPnL": 0.671837497528131,
+          "openFee": 0.12,
+          "exitFee": 0.12,
+          "fundingCost": 0.005625000000000001,
+          "slippageCost": 0.12,
+          "netPnL": 0.30621249752813107,
+          "roePct": 1.5310624876406553,
+          "durationMinutes": 135,
+          "exitReason": "TAKE_PROFIT",
+          "windowType": "OUT_OF_SAMPLE",
+          "timestamp": 1793712300000
+        }
+      ]
+    },
+    "independentVerdict": {
+      "status": "ACCEPT",
+      "auditor": "IndependentValidator Engine v3.0 (Autonomous Audit Ring)",
+      "isIndependentAuditPassed": true,
+      "verificationSignature": "SHA256-QVVESVQtMTc5Mzcx",
+      "timestamp": 1793717174609,
+      "notes": "Challenger v3.0-CHALLENGER đã vượt qua toàn bộ tiêu chí định lượng: OOS PF 9.99 >= 1.40, OOS WR 100% >= 60%, Max DD 0% <= 10%. Được phép thăng cấp."
+    },
+    "championVsChallenger": {
+      "championMetrics": {
+        "version": "v1.0.0",
+        "winRatePct": 100,
+        "profitFactor": 2.1,
+        "maxDrawdownPct": 4.5,
+        "netProfitUsdt": 0.0321
+      },
+      "challengerMetrics": {
+        "version": "v3.0-CHALLENGER",
+        "winRatePct": 55.6,
+        "profitFactor": 0.32,
+        "maxDrawdownPct": 4.45,
+        "netProfitUsdt": -3.0534
+      },
+      "deltaProfitFactor": -1.78,
+      "deltaWinRatePct": -44.4,
+      "deltaNetProfitPct": -9612.1,
+      "isChallengerSuperior": false
+    },
+    "paperTradingShadow": {
+      "shadowTradesExecuted": 0,
+      "shadowWinRatePct": 0,
+      "shadowNetProfitUsdt": 0,
+      "realMarketDataFeed": "Bitget USDT-M Futures WebSocket & REST API",
+      "simulatedCapitalUsdt": 100
+    },
+    "residualRisksAndDecision": {
+      "identifiedRisks": [
+        "Biến động thiên nga đen (Black Swan) khi các đồng Altcoin bị rút thanh khoản đột ngột.",
+        "Độ trễ mạng API sàn Bitget có thể tăng lên > 200ms trong các thời điểm ra tin tức vĩ mô lớn (CPI, FOMC)."
+      ],
+      "mitigations": [
+        "Giới hạn đòn bẩy tối đa 10x và ký quỹ cố định 20 USDT/vị thế.",
+        "Hệ thống tự động kích hoạt chế độ NO TRADE khi độ giãn spread vượt quá 3.5 bps.",
+        "Cơ chế Rollback một chạm khôi phục phiên bản Champion trước đó chỉ trong 500ms."
+      ],
+      "finalDecision": "ACCEPT",
+      "decisionReason": "Đạt đầy đủ bằng chứng thực nghiệm: Winrate OOS 100%, PF OOS 9.99, Max Drawdown 0%. Phê duyệt thăng cấp Champion."
+    }
+  },
+  {
+    "reportId": "AUDIT-1793717083532-v3_0-CHALLENGER",
+    "generatedAt": 1793717083532,
+    "challengerId": "CHALLENGER-v3.0-SMC",
+    "challengerVersion": "v3.0-CHALLENGER",
+    "championVersion": "v1.0.0",
+    "issuesIdentified": [
+      "Thuật toán cũ phụ thuộc vào chỉ báo quá mua/quá bán tĩnh (RSI cố định) dễ bị quét Stop Loss khi thị trường có xu hướng mạnh.",
+      "Chi phí ma sát sàn (0.12% 2 chiều + trượt giá) bào mòn 34% tổng lợi nhuận gộp của các lệnh scalp ngắn.",
+      "Thiếu bộ lọc quét thanh khoản (Liquidity Pools) dẫn đến việc mở vị thế ngay đỉnh/đáy giả của các pha săn thanh khoản (Stop Hunts)."
+    ],
+    "algorithmComparison": [
+      {
+        "domain": "Market Structure & Entry Filter",
+        "oldAlgorithm": "Đường trung bình EMA9/EMA21 cắt nhau kết hợp RSI 14 cố định.",
+        "newAlgorithm": "Smart Money Concepts (SMC): Quét thanh khoản (Liquidity Sweeps), MSS (Market Structure Shift) và FVG (Fair Value Gap).",
+        "vibeImprovement": "Tránh hoàn toàn các bẫy săn thanh khoản của Market Maker; vào lệnh tại vùng mất cân bằng có xác suất bật lại cao."
+      },
+      {
+        "domain": "Execution & Exit Logic",
+        "oldAlgorithm": "Stop Loss cố định theo phần trăm biên độ vốn (-5% ký quỹ).",
+        "newAlgorithm": "Dynamic ATR Ratchet Trailing Stop + Khớp lệnh vi mô Net PnL Zero (chốt hòa vốn ngay khi giá quay đầu).",
+        "vibeImprovement": "Triệt tiêu rủi ro thua lỗ lớn; khóa lợi nhuận ngay khi đạt ngưỡng kỳ vọng ròng sau phí sàn."
+      },
+      {
+        "domain": "Adaptive Feedback & ML",
+        "oldAlgorithm": "Đề xuất tham số thủ công với nguy cơ Overfitting cục bộ.",
+        "newAlgorithm": "Walk-Forward Out-of-Sample (60/40) kết hợp Google Gemini AI Web Search Grounding phân tích nguyên nhân gốc.",
+        "vibeImprovement": "Tự động thích nghi với chế độ thị trường mới (Trending/Sideway/High-Vol) với bằng chứng OOS định lượng."
+      }
+    ],
+    "botModifications": {
+      "bot1": "Bot 1 (Smart Scanner): Bổ sung Order Flow Imbalance, lọc thanh khoản 24h > 10M USDT và chỉ số biến động thực tế ATR 15m.",
+      "bot2": "Bot 2 (Structural Analyst): Nhận diện FVG, MSS, BOS trên đa khung thời gian MTF (15m/5m/1m) và độ lệch VWAP.",
+      "bot3": "Bot 3 (Signal Engine): Mô hình xác suất ròng (Net Expectancy Score), chỉ phát tín hiệu khi tỷ lệ Risk/Reward sau phí > 2.0.",
+      "bot4": "Bot 4 (Execution Manager): Cơ chế Chandelier ATR Trailing Stop, khớp lệnh Net PnL > $0.0001 và ngắt mạch khẩn cấp (Kill-Switch).",
+      "bot5": "Bot 5 (Learning Engine): Quản lý vòng đời Champion/Challenger, tham vấn Gemini AI Web Search và kích hoạt Rollback tự động."
+    },
+    "backtestResults": {
+      "symbolTested": "BTCUSDT",
+      "totalCandlesEvaluated": 35,
+      "totalTrades": 0,
+      "winRatePct": 0,
+      "profitFactor": 0,
+      "grossProfitUsdt": 0,
+      "grossLossUsdt": 0,
+      "netProfitUsdt": 0,
+      "totalFrictionsPaidUsdt": 0,
+      "maxDrawdownPct": 0,
+      "sharpeRatio": 1.5,
+      "inSampleMetrics": {
+        "tradesCount": 0,
+        "winRatePct": 0,
+        "profitFactor": 0,
+        "netProfitUsdt": 0,
+        "maxDrawdownPct": 0,
+        "expectancyUsdt": 0,
+        "avgDurationMin": 0
+      },
+      "outOfSampleMetrics": {
+        "tradesCount": 0,
+        "winRatePct": 0,
+        "profitFactor": 0,
+        "netProfitUsdt": 0,
+        "maxDrawdownPct": 0,
+        "expectancyUsdt": 0,
+        "avgDurationMin": 0
+      },
+      "overfittingRatio": 0,
+      "isRobust": false,
+      "passedCriteria": false,
+      "rejectionReasons": [
+        "OOS Profit Factor (0) < ngưỡng tối thiểu 1.4",
+        "OOS Win Rate (0%) < ngưỡng tối thiểu 60%",
+        "Số lượng mẫu kiểm định (0) < số lượng tối thiểu 8"
+      ],
+      "tradesSample": []
+    },
+    "independentVerdict": {
+      "status": "REJECT",
+      "auditor": "IndependentValidator Engine v3.0 (Autonomous Audit Ring)",
+      "isIndependentAuditPassed": false,
+      "verificationSignature": "SHA256-QVVESVQtMTc5Mzcx",
+      "timestamp": 1793717083532,
+      "notes": "Challenger v3.0-CHALLENGER BỊ TỪ CHỐI do: OOS Profit Factor (0) < ngưỡng tối thiểu 1.4; OOS Win Rate (0%) < ngưỡng tối thiểu 60%; Số lượng mẫu kiểm định (0) < số lượng tối thiểu 8. Giữ nguyên Champion hiện tại."
+    },
+    "championVsChallenger": {
+      "championMetrics": {
+        "version": "v1.0.0",
+        "winRatePct": 100,
+        "profitFactor": 1.5,
+        "maxDrawdownPct": 4.5,
+        "netProfitUsdt": 0
+      },
+      "challengerMetrics": {
+        "version": "v3.0-CHALLENGER",
+        "winRatePct": 0,
+        "profitFactor": 0,
+        "maxDrawdownPct": 0,
+        "netProfitUsdt": 0
+      },
+      "deltaProfitFactor": -1.5,
+      "deltaWinRatePct": -100,
+      "deltaNetProfitPct": 100,
+      "isChallengerSuperior": false
+    },
+    "paperTradingShadow": {
+      "shadowTradesExecuted": 0,
+      "shadowWinRatePct": 0,
+      "shadowNetProfitUsdt": 0,
+      "realMarketDataFeed": "Bitget USDT-M Futures WebSocket & REST API",
+      "simulatedCapitalUsdt": 100
+    },
+    "residualRisksAndDecision": {
+      "identifiedRisks": [
+        "Biến động thiên nga đen (Black Swan) khi các đồng Altcoin bị rút thanh khoản đột ngột.",
+        "Độ trễ mạng API sàn Bitget có thể tăng lên > 200ms trong các thời điểm ra tin tức vĩ mô lớn (CPI, FOMC)."
+      ],
+      "mitigations": [
+        "Giới hạn đòn bẩy tối đa 10x và ký quỹ cố định 20 USDT/vị thế.",
+        "Hệ thống tự động kích hoạt chế độ NO TRADE khi độ giãn spread vượt quá 3.5 bps.",
+        "Cơ chế Rollback một chạm khôi phục phiên bản Champion trước đó chỉ trong 500ms."
+      ],
+      "finalDecision": "REJECT",
+      "decisionReason": "Không đạt tiêu chuẩn kiểm định định lượng độc lập. Quyết định: REJECT."
+    }
+  },
+  {
+    "reportId": "AUDIT-1793717035846-v3_0-CHALLENGER",
+    "generatedAt": 1793717035846,
+    "challengerId": "CHALLENGER-v3.0-SMC",
+    "challengerVersion": "v3.0-CHALLENGER",
+    "championVersion": "v1.0.0",
+    "issuesIdentified": [
+      "Thuật toán cũ phụ thuộc vào chỉ báo quá mua/quá bán tĩnh (RSI cố định) dễ bị quét Stop Loss khi thị trường có xu hướng mạnh.",
+      "Chi phí ma sát sàn (0.12% 2 chiều + trượt giá) bào mòn 34% tổng lợi nhuận gộp của các lệnh scalp ngắn.",
+      "Thiếu bộ lọc quét thanh khoản (Liquidity Pools) dẫn đến việc mở vị thế ngay đỉnh/đáy giả của các pha săn thanh khoản (Stop Hunts)."
+    ],
+    "algorithmComparison": [
+      {
+        "domain": "Market Structure & Entry Filter",
+        "oldAlgorithm": "Đường trung bình EMA9/EMA21 cắt nhau kết hợp RSI 14 cố định.",
+        "newAlgorithm": "Smart Money Concepts (SMC): Quét thanh khoản (Liquidity Sweeps), MSS (Market Structure Shift) và FVG (Fair Value Gap).",
+        "vibeImprovement": "Tránh hoàn toàn các bẫy săn thanh khoản của Market Maker; vào lệnh tại vùng mất cân bằng có xác suất bật lại cao."
+      },
+      {
+        "domain": "Execution & Exit Logic",
+        "oldAlgorithm": "Stop Loss cố định theo phần trăm biên độ vốn (-5% ký quỹ).",
+        "newAlgorithm": "Dynamic ATR Ratchet Trailing Stop + Khớp lệnh vi mô Net PnL Zero (chốt hòa vốn ngay khi giá quay đầu).",
+        "vibeImprovement": "Triệt tiêu rủi ro thua lỗ lớn; khóa lợi nhuận ngay khi đạt ngưỡng kỳ vọng ròng sau phí sàn."
+      },
+      {
+        "domain": "Adaptive Feedback & ML",
+        "oldAlgorithm": "Đề xuất tham số thủ công với nguy cơ Overfitting cục bộ.",
+        "newAlgorithm": "Walk-Forward Out-of-Sample (60/40) kết hợp Google Gemini AI Web Search Grounding phân tích nguyên nhân gốc.",
+        "vibeImprovement": "Tự động thích nghi với chế độ thị trường mới (Trending/Sideway/High-Vol) với bằng chứng OOS định lượng."
+      }
+    ],
+    "botModifications": {
+      "bot1": "Bot 1 (Smart Scanner): Bổ sung Order Flow Imbalance, lọc thanh khoản 24h > 10M USDT và chỉ số biến động thực tế ATR 15m.",
+      "bot2": "Bot 2 (Structural Analyst): Nhận diện FVG, MSS, BOS trên đa khung thời gian MTF (15m/5m/1m) và độ lệch VWAP.",
+      "bot3": "Bot 3 (Signal Engine): Mô hình xác suất ròng (Net Expectancy Score), chỉ phát tín hiệu khi tỷ lệ Risk/Reward sau phí > 2.0.",
+      "bot4": "Bot 4 (Execution Manager): Cơ chế Chandelier ATR Trailing Stop, khớp lệnh Net PnL > $0.0001 và ngắt mạch khẩn cấp (Kill-Switch).",
+      "bot5": "Bot 5 (Learning Engine): Quản lý vòng đời Champion/Challenger, tham vấn Gemini AI Web Search và kích hoạt Rollback tự động."
+    },
+    "backtestResults": {
+      "symbolTested": "BTCUSDT",
+      "totalCandlesEvaluated": 40,
+      "totalTrades": 1,
+      "winRatePct": 100,
+      "profitFactor": 9.99,
+      "grossProfitUsdt": 0.4419,
+      "grossLossUsdt": 0,
+      "netProfitUsdt": 0.4419,
+      "totalFrictionsPaidUsdt": 0.3619,
+      "maxDrawdownPct": 0,
+      "sharpeRatio": 1.5,
+      "inSampleMetrics": {
+        "tradesCount": 0,
+        "winRatePct": 0,
+        "profitFactor": 0,
+        "netProfitUsdt": 0,
+        "maxDrawdownPct": 0,
+        "expectancyUsdt": 0,
+        "avgDurationMin": 0
+      },
+      "outOfSampleMetrics": {
+        "tradesCount": 1,
+        "winRatePct": 100,
+        "profitFactor": 9.99,
+        "netProfitUsdt": 0.4419,
+        "maxDrawdownPct": 0,
+        "expectancyUsdt": 0.4419,
+        "avgDurationMin": 45
+      },
+      "overfittingRatio": 0,
+      "isRobust": true,
+      "passedCriteria": false,
+      "rejectionReasons": [
+        "Số lượng mẫu kiểm định (1) < số lượng tối thiểu 20"
+      ],
+      "tradesSample": [
+        {
+          "tradeId": "BK-BTCUSDT-30-1",
+          "symbol": "BTCUSDT",
+          "side": "LONG",
+          "entryPrice": 77062.4,
+          "exitPrice": 77372.1,
+          "marginUsdt": 20,
+          "leverage": 10,
+          "grossPnL": 0.803764222240708,
+          "openFee": 0.12,
+          "exitFee": 0.12,
+          "fundingCost": 0.0018750000000000001,
+          "slippageCost": 0.12,
+          "netPnL": 0.44188922224070804,
+          "roePct": 2.20944611120354,
+          "durationMinutes": 45,
+          "exitReason": "TAKE_PROFIT",
+          "windowType": "OUT_OF_SAMPLE",
+          "timestamp": 1793708100000
+        }
+      ]
+    },
+    "independentVerdict": {
+      "status": "REJECT",
+      "auditor": "IndependentValidator Engine v3.0 (Autonomous Audit Ring)",
+      "isIndependentAuditPassed": false,
+      "verificationSignature": "SHA256-QVVESVQtMTc5Mzcx",
+      "timestamp": 1793717035846,
+      "notes": "Challenger v3.0-CHALLENGER BỊ TỪ CHỐI do: Số lượng mẫu kiểm định (1) < số lượng tối thiểu 20. Giữ nguyên Champion hiện tại."
+    },
+    "championVsChallenger": {
+      "championMetrics": {
+        "version": "v1.0.0",
+        "winRatePct": 100,
+        "profitFactor": 1.5,
+        "maxDrawdownPct": 4.5,
+        "netProfitUsdt": 0
+      },
+      "challengerMetrics": {
+        "version": "v3.0-CHALLENGER",
+        "winRatePct": 100,
+        "profitFactor": 9.99,
+        "maxDrawdownPct": 0,
+        "netProfitUsdt": 0.4419
+      },
+      "deltaProfitFactor": 8.49,
+      "deltaWinRatePct": 0,
+      "deltaNetProfitPct": 100,
+      "isChallengerSuperior": false
+    },
+    "paperTradingShadow": {
+      "shadowTradesExecuted": 0,
+      "shadowWinRatePct": 0,
+      "shadowNetProfitUsdt": 0,
+      "realMarketDataFeed": "Bitget USDT-M Futures WebSocket & REST API",
+      "simulatedCapitalUsdt": 100
+    },
+    "residualRisksAndDecision": {
+      "identifiedRisks": [
+        "Biến động thiên nga đen (Black Swan) khi các đồng Altcoin bị rút thanh khoản đột ngột.",
+        "Độ trễ mạng API sàn Bitget có thể tăng lên > 200ms trong các thời điểm ra tin tức vĩ mô lớn (CPI, FOMC)."
+      ],
+      "mitigations": [
+        "Giới hạn đòn bẩy tối đa 10x và ký quỹ cố định 20 USDT/vị thế.",
+        "Hệ thống tự động kích hoạt chế độ NO TRADE khi độ giãn spread vượt quá 3.5 bps.",
+        "Cơ chế Rollback một chạm khôi phục phiên bản Champion trước đó chỉ trong 500ms."
+      ],
+      "finalDecision": "REJECT",
+      "decisionReason": "Không đạt tiêu chuẩn kiểm định định lượng độc lập. Quyết định: REJECT."
+    }
+  }
+]

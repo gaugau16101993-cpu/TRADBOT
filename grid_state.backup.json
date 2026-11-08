@@ -1,0 +1,293 @@
+{
+  "config": {
+    "autoGridEnabled": true,
+    "maxActiveGrids": 3,
+    "marginPerGridUsdt": 20,
+    "defaultLeverage": 10,
+    "minVolume24hUsdt": 10000000,
+    "maxSpreadBps": 3.5,
+    "minGridCount": 6,
+    "maxGridCount": 12,
+    "mandatoryStopLossOffsetPct": 1.5,
+    "mandatoryTakeProfitNetPct": 3,
+    "minProfitPerLevelAfterFeesPct": 0.25
+  },
+  "activeBots": [
+    {
+      "botId": "GRID-ENAUSDT-MVXYUTHN",
+      "symbol": "ENAUSDT",
+      "mode": "SHORT",
+      "status": "ACTIVE",
+      "upperPrice": 0.1882,
+      "lowerPrice": 0.1845,
+      "gridCount": 6,
+      "gridSpacingPct": 0.4,
+      "allocatedMarginUsdt": 20,
+      "leverage": 10,
+      "totalNotionalUsdt": 200,
+      "entryPrice": 0.1862,
+      "currentPrice": 0.1862,
+      "stopLossPrice": 0.191,
+      "stopLossPctFromBoundary": 1.5,
+      "takeProfitTargetNetProfitPct": 3,
+      "takeProfitTargetUsdt": 0.6,
+      "levels": [
+        {
+          "levelIndex": 0,
+          "price": 0.1845,
+          "side": "BUY",
+          "status": "PENDING",
+          "qty": 179.019,
+          "accumulatedProfitUsdt": 0
+        },
+        {
+          "levelIndex": 1,
+          "price": 0.1852,
+          "side": "BUY",
+          "status": "PENDING",
+          "qty": 179.019,
+          "accumulatedProfitUsdt": 0
+        },
+        {
+          "levelIndex": 2,
+          "price": 0.186,
+          "side": "BUY",
+          "status": "PENDING",
+          "qty": 179.019,
+          "accumulatedProfitUsdt": 0
+        },
+        {
+          "levelIndex": 3,
+          "price": 0.1867,
+          "side": "SELL",
+          "status": "PENDING",
+          "qty": 179.019,
+          "accumulatedProfitUsdt": 0
+        },
+        {
+          "levelIndex": 4,
+          "price": 0.1875,
+          "side": "SELL",
+          "status": "PENDING",
+          "qty": 179.019,
+          "accumulatedProfitUsdt": 0
+        },
+        {
+          "levelIndex": 5,
+          "price": 0.1882,
+          "side": "SELL",
+          "status": "PENDING",
+          "qty": 179.019,
+          "accumulatedProfitUsdt": 0
+        }
+      ],
+      "completedArbitrageCycles": 0,
+      "totalGridProfitUsdt": 0,
+      "unrealizedPnLUsdt": 0,
+      "netPnLUsdt": -0.12,
+      "totalFrictionsPaidUsdt": 0.12,
+      "roePct": -0.6,
+      "createdAt": 1793545791179,
+      "lastTickTime": 1793545796693,
+      "adx15m": 25.8,
+      "atr15m": 0.0011,
+      "marketRegimeSnapshot": "SHORT (ADX: 25.8)"
+    },
+    {
+      "botId": "GRID-BTCUSDT-MVXYUTXK",
+      "symbol": "BTCUSDT",
+      "mode": "NEUTRAL",
+      "status": "ACTIVE",
+      "upperPrice": 78140.4255,
+      "lowerPrice": 75477.09,
+      "gridCount": 7,
+      "gridSpacingPct": 0.57,
+      "allocatedMarginUsdt": 20,
+      "leverage": 10,
+      "totalNotionalUsdt": 200,
+      "entryPrice": 77412.4,
+      "currentPrice": 77412.4,
+      "stopLossPrice": 74344.9336,
+      "stopLossPctFromBoundary": 1.5,
+      "takeProfitTargetNetProfitPct": 3,
+      "takeProfitTargetUsdt": 0.6,
+      "levels": [
+        {
+          "levelIndex": 0,
+          "price": 75477.09,
+          "side": "BUY",
+          "status": "PENDING",
+          "qty": 0.0004,
+          "accumulatedProfitUsdt": 0
+        },
+        {
+          "levelIndex": 1,
+          "price": 75920.9793,
+          "side": "BUY",
+          "status": "PENDING",
+          "qty": 0.0004,
+          "accumulatedProfitUsdt": 0
+        },
+        {
+          "levelIndex": 2,
+          "price": 76364.8685,
+          "side": "BUY",
+          "status": "PENDING",
+          "qty": 0.0004,
+          "accumulatedProfitUsdt": 0
+        },
+        {
+          "levelIndex": 3,
+          "price": 76808.7577,
+          "side": "BUY",
+          "status": "PENDING",
+          "qty": 0.0004,
+          "accumulatedProfitUsdt": 0
+        },
+        {
+          "levelIndex": 4,
+          "price": 77252.647,
+          "side": "BUY",
+          "status": "PENDING",
+          "qty": 0.0004,
+          "accumulatedProfitUsdt": 0
+        },
+        {
+          "levelIndex": 5,
+          "price": 77696.5363,
+          "side": "SELL",
+          "status": "PENDING",
+          "qty": 0.0004,
+          "accumulatedProfitUsdt": 0
+        },
+        {
+          "levelIndex": 6,
+          "price": 78140.4255,
+          "side": "SELL",
+          "status": "PENDING",
+          "qty": 0.0004,
+          "accumulatedProfitUsdt": 0
+        }
+      ],
+      "completedArbitrageCycles": 0,
+      "totalGridProfitUsdt": 0,
+      "unrealizedPnLUsdt": 0,
+      "netPnLUsdt": -0.12,
+      "totalFrictionsPaidUsdt": 0.12,
+      "roePct": -0.6,
+      "createdAt": 1793545791752,
+      "lastTickTime": 1793545796693,
+      "adx15m": 10.9,
+      "atr15m": 105.8143,
+      "marketRegimeSnapshot": "NEUTRAL (ADX: 10.9)"
+    },
+    {
+      "botId": "GRID-ETHUSDT-MVZIZR7B",
+      "symbol": "ETHUSDT",
+      "mode": "NEUTRAL",
+      "status": "ACTIVE",
+      "upperPrice": 2306.9912,
+      "lowerPrice": 2255.1178,
+      "gridCount": 6,
+      "gridSpacingPct": 0.46,
+      "allocatedMarginUsdt": 20,
+      "leverage": 10,
+      "totalNotionalUsdt": 200,
+      "entryPrice": 2265.6,
+      "currentPrice": 2267.69,
+      "stopLossPrice": 2221.291,
+      "stopLossPctFromBoundary": 1.5,
+      "takeProfitTargetNetProfitPct": 3,
+      "takeProfitTargetUsdt": 0.6,
+      "levels": [
+        {
+          "levelIndex": 0,
+          "price": 2255.1178,
+          "side": "BUY",
+          "status": "PENDING",
+          "qty": 0.0147,
+          "accumulatedProfitUsdt": 0,
+          "fillTime": 1793643587929
+        },
+        {
+          "levelIndex": 1,
+          "price": 2265.4925,
+          "side": "SELL",
+          "status": "FILLED",
+          "qty": 0.0147,
+          "accumulatedProfitUsdt": 0,
+          "fillTime": 1793697107463
+        },
+        {
+          "levelIndex": 2,
+          "price": 2275.8672,
+          "side": "SELL",
+          "status": "PENDING",
+          "qty": 0.0147,
+          "accumulatedProfitUsdt": 0
+        },
+        {
+          "levelIndex": 3,
+          "price": 2286.2418,
+          "side": "SELL",
+          "status": "PENDING",
+          "qty": 0.0147,
+          "accumulatedProfitUsdt": 0
+        },
+        {
+          "levelIndex": 4,
+          "price": 2296.6165,
+          "side": "SELL",
+          "status": "PENDING",
+          "qty": 0.0147,
+          "accumulatedProfitUsdt": 0
+        },
+        {
+          "levelIndex": 5,
+          "price": 2306.9912,
+          "side": "SELL",
+          "status": "PENDING",
+          "qty": 0.0147,
+          "accumulatedProfitUsdt": 0
+        }
+      ],
+      "completedArbitrageCycles": 2,
+      "totalGridProfitUsdt": 0.225,
+      "unrealizedPnLUsdt": 0.0307,
+      "netPnLUsdt": 0.0359,
+      "totalFrictionsPaidUsdt": 0.21979999999999997,
+      "roePct": 0.18,
+      "createdAt": 1793640079991,
+      "lastTickTime": 1793700031718,
+      "adx15m": 19.2,
+      "atr15m": 11.4964,
+      "marketRegimeSnapshot": "NEUTRAL (ADX: 19.2)"
+    }
+  ],
+  "auditHistory": [
+    {
+      "auditId": "GRID-AUDIT-MVZIZMZN",
+      "botId": "GRID-ZECUSDT-MVZDLV22",
+      "symbol": "ZECUSDT",
+      "mode": "LONG",
+      "durationSeconds": 9040,
+      "completedCycles": 3,
+      "realizedGridProfit": 0.5227,
+      "unrealizedPnL": -1.2188,
+      "netPnL": -1.0146,
+      "totalFeesPaid": 0.3185,
+      "closeReason": "MANDATORY_STOP_LOSS: Giá phá vỡ biên dưới (-1.5%): $1213.35 <= SL $1214.5644",
+      "exitPrice": 1213.35,
+      "upperPrice": 1273.4547,
+      "lowerPrice": 1233.0603,
+      "stopLossPrice": 1214.5644,
+      "closedAt": 1793640074531
+    }
+  ],
+  "totalProfitLocked": 0.7477,
+  "totalCompletedCycles": 5,
+  "totalGridsCreated": 4,
+  "successfulGrids": 0,
+  "stoppedLossGrids": 1,
+  "savedAt": 1793716420272
+}

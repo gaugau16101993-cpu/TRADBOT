@@ -1,0 +1,70 @@
+{
+  "generatedAt": "2026-11-08T08:47:12.303Z",
+  "totalRecordsEvaluated": 927,
+  "validTradeIdRecordsCount": 927,
+  "missingTradeIdCount": 0,
+  "invalidPriceRecordsCount": 9,
+  "duplicateSignalCountAcrossHistory": 72,
+  "botIdDistribution": {
+    "BotID_4": 927
+  },
+  "closeReasonDistribution": {
+    "NET_PNL_POSITIVE_TRIGGER": 222,
+    "STOP_LOSS": 499,
+    "TAKE_PROFIT": 145,
+    "TRAILING_TP": 61
+  },
+  "totalNetPnL": -137.6374,
+  "totalGrossPnL": -111.0601,
+  "totalFeesAndCosts": 26.5786,
+  "winRatePct": 48,
+  "profitFactor": 0.2585,
+  "winsCount": 445,
+  "lossesCount": 478,
+  "breakevensCount": 4,
+  "avgWinUsdt": 0.1078,
+  "avgLossUsdt": 0.3883,
+  "lossToWinAsymmetryRatio": 3.6,
+  "maxDrawdownPct": 137.64,
+  "unverifiedSymbolsCount": 369,
+  "unverifiedSymbolsLossUsdt": -102.1874,
+  "legitimateCryptoFuturesLossUsdt": -35.45,
+  "catastrophicLossesCount": 4,
+  "rootCauses": [
+    {
+      "category": "UNVERIFIED_SYNTHETIC_SYMBOLS",
+      "description": "Trading unverified non-crypto CFD symbols (MINIMAX, ANTHROPIC, SKHY, SOXL, SOXS, CL, SNDK, etc.) with massive spread and extreme illiquidity slippage (up to 798 bps).",
+      "impactUsdt": -102.19,
+      "affectedTrades": 369,
+      "recommendedRemedy": "Enforce strict Bitget USDT-M Perpetual Crypto Futures Whitelist. Ban all synthetic CFDs and require min $10M 24h liquidity."
+    },
+    {
+      "category": "LOSS_ASYMMETRY_AND_STOP_LOSS_CLAMP",
+      "description": "Average loss (-$0.3883) is 3.60x larger than average win (+$0.1078). Stop losses were placed too far or slipped due to lack of a hard maximum dollar risk clamp <= 50% of margin.",
+      "impactUsdt": -82.4,
+      "affectedTrades": 499,
+      "recommendedRemedy": "Clamp Stop Loss strictly so max loss <= 50% of margin (e.g. max $1.00 loss on $2.00 margin). Never widen SL."
+    },
+    {
+      "category": "CORRUPTED_ZERO_PRICE_EXECUTION",
+      "description": "10 trades recorded with entry or exit price = 0 (mostly PEPEUSDT due to 8-decimal precision loss or stale 0 ticker), causing corrupted calculations including a fabricated +20.72 USDT profit.",
+      "impactUsdt": 20.72,
+      "affectedTrades": 9,
+      "recommendedRemedy": "Strict pre-execution gate: Never execute an order if price <= 0, NaN, or stale (> 30s). Maintain 8-decimal precision for meme contracts."
+    },
+    {
+      "category": "MISSING_STRATEGY_LINEAGE_ATTRIBUTION",
+      "description": "All 927 records attribute solely to BotID 4 (Executor), obscuring performance by Bot 1 scanner, Bot 2 SMC analyst, Bot 3 debate consensus, and Bot 5 learning model.",
+      "impactUsdt": 0,
+      "affectedTrades": 927,
+      "recommendedRemedy": "Embed full multi-agent lineage (strategy, trigger timeframe, Bot 1/2/3/5 metrics) into every closed trade payload."
+    },
+    {
+      "category": "DUPLICATE_ORDER_AND_REPAIR_OVERTRADING",
+      "description": "Overtrading and duplicate signal execution across volatile sideways chop without consensus conviction or clear edge.",
+      "impactUsdt": -35.2,
+      "affectedTrades": 120,
+      "recommendedRemedy": "Enforce SignalID idempotency locks, max 1 position per symbol, max 10 concurrent positions, and mandatory DEADLOCK_NO_TRADE."
+    }
+  ]
+}
